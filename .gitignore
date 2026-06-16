@@ -17,3 +17,6 @@ banner/venv/
 # Python bytecode cache
 __pycache__/
 *.pyc
+
+# Generated per-player OG image cache
+og_cache/

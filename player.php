@@ -75,7 +75,7 @@ $name    = $rankRow['name'] ?? ($statRow['name'] ?? 'Unknown');
 <title><?= h($name) ?> — <?= h($cfg['site_title']) ?></title>
 <?php
 $siteUrl = rtrim($cfg['site_url'] ?? 'https://stats.damineweb.work', '/');
-$ogImg   = $siteUrl . '/social.png';
+$ogImg   = $siteUrl . '/og.php?id=' . rawurlencode($id);
 $pRank   = $rankRow ? ($rankRow['rank'] . ' · ' . number_format((int)$rankRow['points']) . ' pts') : 'Unranked';
 $pDesc   = $name . ' on MUS SOU MANO CS2 — ' . $pRank
          . ($placement ? ' · #' . $placement . ' of ' . number_format($totalPlayers) : '')
