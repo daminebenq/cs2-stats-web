@@ -73,6 +73,28 @@ $name    = $rankRow['name'] ?? ($statRow['name'] ?? 'Unknown');
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title><?= h($name) ?> — <?= h($cfg['site_title']) ?></title>
+<?php
+$siteUrl = rtrim($cfg['site_url'] ?? 'https://stats.damineweb.work', '/');
+$ogImg   = $siteUrl . '/social.png';
+$pRank   = $rankRow ? ($rankRow['rank'] . ' · ' . number_format((int)$rankRow['points']) . ' pts') : 'Unranked';
+$pDesc   = $name . ' on MUS SOU MANO CS2 — ' . $pRank
+         . ($placement ? ' · #' . $placement . ' of ' . number_format($totalPlayers) : '')
+         . ' · ' . number_format($kills) . ' kills · ' . number_format($kd, 2) . ' K/D · ' . number_format($hsp, 1) . '% HS.';
+?>
+<meta name="description" content="<?= h($pDesc) ?>">
+<meta name="theme-color" content="#f0a500">
+<meta property="og:type" content="profile">
+<meta property="og:site_name" content="MUS SOU MANO">
+<meta property="og:title" content="<?= h($name) ?> — MUS SOU MANO Stats">
+<meta property="og:description" content="<?= h($pDesc) ?>">
+<meta property="og:url" content="<?= h($siteUrl) ?>/player.php?id=<?= h($id) ?>">
+<meta property="og:image" content="<?= h($ogImg) ?>">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="<?= h($name) ?> — MUS SOU MANO Stats">
+<meta name="twitter:description" content="<?= h($pDesc) ?>">
+<meta name="twitter:image" content="<?= h($ogImg) ?>">
 <link rel="stylesheet" href="style.css">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 </head>

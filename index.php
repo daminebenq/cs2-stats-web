@@ -18,6 +18,7 @@ $topFraggers = [];
 $bestAim = [];
 $recent = [];
 $topCredits = [];
+$vips = [];
 
 try {
     $pdo = db($cfg);
@@ -66,6 +67,11 @@ try {
                     "SELECT PlayerName AS name, SteamID AS steam_id, Credits, Vip
                      FROM store_players ORDER BY Credits DESC LIMIT 5")->fetchAll();
             } catch (Throwable $e) { $topCredits = []; }
+            try {
+                $vips = $sdb->query(
+                    "SELECT PlayerName AS name, SteamID AS steam_id, Credits
+                     FROM store_players WHERE Vip = 1 ORDER BY Credits DESC LIMIT 8")->fetchAll();
+            } catch (Throwable $e) { $vips = []; }
         }
     }
 } catch (Throwable $e) {
@@ -100,6 +106,25 @@ function ago(?string $dt): string {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title><?= h($cfg['site_title']) ?> — CS2 Stats</title>
+<?php
+$siteUrl = rtrim($cfg['site_url'] ?? 'https://stats.damineweb.work', '/');
+$ogImg   = $siteUrl . '/social.png';
+$ogDesc  = 'Live rankings, stats & leaderboards for the MUS SOU MANO CS2 community fleet — Zombie, Multi-1v1 Arena, HS-Only Deathmatch, KZ & AWP. Connect and climb the ranks.';
+?>
+<meta name="description" content="<?= h($ogDesc) ?>">
+<meta name="theme-color" content="#f0a500">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MUS SOU MANO">
+<meta property="og:title" content="MUS SOU MANO — CS2 Fleet Stats">
+<meta property="og:description" content="<?= h($ogDesc) ?>">
+<meta property="og:url" content="<?= h($siteUrl) ?>/">
+<meta property="og:image" content="<?= h($ogImg) ?>">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="MUS SOU MANO — CS2 Fleet Stats">
+<meta name="twitter:description" content="<?= h($ogDesc) ?>">
+<meta name="twitter:image" content="<?= h($ogImg) ?>">
 <link rel="stylesheet" href="style.css">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 </head>
@@ -213,6 +238,16 @@ function ago(?string $dt): string {
                 <li><a href="player.php?id=<?= h((string)$p['steam_id']) ?>"><?= h($p['name'] ?? 'Unknown') ?><?php if (!empty($p['Vip'])): ?> <span class="vip">VIP</span><?php endif; ?></a><span class="credits"><?= number_format((int)$p['Credits']) ?></span></li>
                 <?php endforeach; ?>
             </ol>
+        </div>
+        <?php endif; ?>
+        <?php if (!empty($vips)): ?>
+        <div class="panel">
+            <h3>VIP Members</h3>
+            <ul class="mini">
+                <?php foreach ($vips as $p): ?>
+                <li><a href="player.php?id=<?= h((string)$p['steam_id']) ?>"><?= h($p['name'] ?? 'Unknown') ?> <span class="vip">VIP</span></a><span class="credits"><?= number_format((int)$p['Credits']) ?></span></li>
+                <?php endforeach; ?>
+            </ul>
         </div>
         <?php endif; ?>
         <div class="panel">

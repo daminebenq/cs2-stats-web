@@ -11,6 +11,8 @@ return [
     'site_title' => 'MUS SOU MANO',
     'site_sub'   => 'CS2 Community &middot; Live Rankings',
     'public_ip'  => '__PUBLIC_IP__',
+    // Canonical public URL (used for social link previews / og:image)
+    'site_url'   => 'https://stats.damineweb.work',
     // Optional Discord invite (leave '' to hide the button)
     'discord'    => 'https://discord.gg/',
     'servers'    => [
