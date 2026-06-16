@@ -118,8 +118,7 @@ $siteUrl = rtrim($cfg['site_url'] ?? 'https://stats.damineweb.work', '/');
 <?php else: ?>
     <?php if ($isArena): ?>
     <section class="arena-ladder">
-        <h2 class="sec-title">⚔ Arena Ladder <span class="sub">CS:GO-style 1v1 ELO &middot; everyone starts at 1500</span></h2>
-        <?php if (empty($arena)): ?>
+        <h2 class="sec-title">⚔ Arena Ladder <span class="sub">CS:GO-style 1v1 ELO &middot; everyone starts at 1500</span></h2>        <p class="ladder-note">Multiple 1v1 duels run at once in separate arenas. <strong>Win your duel and you climb an arena; lose and you drop down</strong> &mdash; so you always face someone near your skill. Every kill exchanges ELO with your opponent: beat a higher-rated player to gain more, and reach the top to be crowned <strong>Arena King</strong>.</p>        <?php if (empty($arena)): ?>
             <div class="empty">No ranked duels yet. Win a 1v1 here and you'll appear on the ladder! Type <code>!elo</code> / <code>!arenatop</code> in-game.</div>
         <?php else: ?>
         <table class="board">

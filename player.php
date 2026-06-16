@@ -17,6 +17,9 @@ $statRow = null;
 $timeRow = null;
 $placement = null;
 $totalPlayers = 0;
+$arenaRow = null;
+$arenaPlace = null;
+$arenaTotal = 0;
 
 if ($id !== '') {
     try {
@@ -46,6 +49,22 @@ if ($id !== '') {
     } catch (Throwable $e) {
         $error = $e->getMessage();
     }
+
+    // Arena 1v1 ELO (optional — lives in the k4store DB, read via store_db)
+    $sdb = store_db($cfg);
+    if ($sdb) {
+        try {
+            $a = $sdb->prepare("SELECT * FROM arena_elo WHERE steamid64 = :id");
+            $a->execute([':id' => $id]);
+            $arenaRow = $a->fetch() ?: null;
+            if ($arenaRow) {
+                $arenaTotal = (int)$sdb->query("SELECT COUNT(*) FROM arena_elo WHERE duels > 0")->fetchColumn();
+                $ap = $sdb->prepare("SELECT COUNT(*) + 1 FROM arena_elo WHERE rating > :r AND duels > 0");
+                $ap->execute([':r' => (int)$arenaRow['rating']]);
+                $arenaPlace = (int)$ap->fetchColumn();
+            }
+        } catch (Throwable $e) { $arenaRow = null; }
+    }
 }
 
 function fmt_secs(int $s): string {
@@ -65,7 +84,7 @@ $hitGiven= (int)($statRow['hits_given'] ?? 0);
 $kd      = $deaths > 0 ? $kills / $deaths : (float)$kills;
 $hsp     = $kills > 0 ? $hs / $kills * 100 : 0.0;
 $acc     = $shoots > 0 ? $hitGiven / $shoots * 100 : 0.0;
-$name    = $rankRow['name'] ?? ($statRow['name'] ?? 'Unknown');
+$name    = $rankRow['name'] ?? ($statRow['name'] ?? ($arenaRow['name'] ?? 'Unknown'));
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -118,7 +137,7 @@ $pDesc   = $name . ' on MUS SOU MANO CS2 — ' . $pRank
     <div class="error">Database error.<br><small><?= h($error) ?></small></div>
 <?php elseif ($id === ''): ?>
     <div class="empty">No player selected.</div>
-<?php elseif (!$rankRow && !$statRow): ?>
+<?php elseif (!$rankRow && !$statRow && !$arenaRow): ?>
     <div class="empty">Player not found. They may not have played yet.</div>
 <?php else: ?>
 
@@ -136,6 +155,29 @@ $pDesc   = $name . ' on MUS SOU MANO CS2 — ' . $pRank
     <div class="card"><span class="card-lbl">Assists</span><span class="card-val"><?= number_format($assists) ?></span></div>
     <div class="card"><span class="card-lbl">Accuracy</span><span class="card-val"><?= number_format($acc, 1) ?>%</span></div>
 </div>
+
+<?php if ($arenaRow):
+    $aRating = (int)$arenaRow['rating']; $aWins = (int)$arenaRow['wins']; $aLosses = (int)$arenaRow['losses'];
+    $aDuels = (int)$arenaRow['duels']; $aStreak = (int)$arenaRow['streak']; $aBest = (int)$arenaRow['best_rating'];
+    $aWinp = $aDuels > 0 ? $aWins / $aDuels * 100 : 0.0;
+?>
+<section class="arena-profile">
+    <h3 class="sec-title">&#9876; Arena 1v1 Ladder <span class="sub">CS:GO-style multi-1v1 &middot; win your duel to climb</span></h3>
+    <div class="cards">
+        <div class="card hi">
+            <span class="card-lbl">ELO Rating</span>
+            <span class="card-val"><?= number_format($aRating) ?></span>
+            <?php if ($arenaPlace): ?><span class="card-sub">#<?= $arenaPlace ?> of <?= number_format($arenaTotal) ?></span><?php endif; ?>
+        </div>
+        <div class="card"><span class="card-lbl">Wins</span><span class="card-val"><?= number_format($aWins) ?></span></div>
+        <div class="card"><span class="card-lbl">Losses</span><span class="card-val"><?= number_format($aLosses) ?></span></div>
+        <div class="card"><span class="card-lbl">Win %</span><span class="card-val"><?= number_format($aWinp, 0) ?>%</span></div>
+        <div class="card"><span class="card-lbl">Duels</span><span class="card-val"><?= number_format($aDuels) ?></span></div>
+        <div class="card"><span class="card-lbl">Streak</span><span class="card-val"><?php if ($aStreak > 0): ?><span class="wstreak">W<?= $aStreak ?></span><?php elseif ($aStreak < 0): ?><span class="lstreak">L<?= -$aStreak ?></span><?php else: ?>&mdash;<?php endif; ?></span></div>
+        <div class="card"><span class="card-lbl">Best</span><span class="card-val"><?= number_format($aBest) ?></span></div>
+    </div>
+</section>
+<?php endif; ?>
 
 <?php if ($statRow): ?>
 <div class="detail-grid">

@@ -185,6 +185,17 @@ $ogDesc  = 'Live rankings, stats & leaderboards for the MUS SOU MANO CS2 communi
 <main>
 <div class="layout">
     <div class="col-main">
+        <?php if ($q === '' && $page === 1 && !empty($arenaTop)): $king = $arenaTop[0]; ?>
+        <a class="arena-king" href="server.php?port=27018">
+            <span class="crown">&#128081;</span>
+            <span class="king-body">
+                <span class="king-lbl">Arena King &middot; 1v1 Ladder Leader</span>
+                <span class="king-name"><?= h($king['name'] ?: 'Unknown') ?></span>
+                <span class="king-meta"><span class="king-elo"><?= number_format((int)$king['rating']) ?></span> ELO &middot; <?= (int)$king['wins'] ?>W&ndash;<?= (int)$king['losses'] ?>L</span>
+            </span>
+            <span class="king-cta">View ladder &raquo;</span>
+        </a>
+        <?php endif; ?>
         <form class="search" method="get" action="index.php">
             <input type="text" name="q" placeholder="Search player name&hellip;" value="<?= h($q) ?>" autocomplete="off">
             <button type="submit">Search</button>
