@@ -316,3 +316,21 @@ footer code { background: var(--panel2); padding: 1px 7px; border-radius: 5px; c
     color: #ff7b72; font-weight: 600; font-size: 0.72rem;
     text-align: right; white-space: normal; line-height: 1.2;
 }
+
+/* arena 1v1 ELO ladder */
+.panel.arena { border-color: var(--accent); background: linear-gradient(160deg, #221d10, #161b22); }
+.panel.arena h3 { color: var(--accent); display: flex; align-items: baseline; gap: 8px; }
+.panel.arena h3 .sub { font-size: 0.62rem; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; color: var(--muted); }
+.mini.elo li span.eloval { color: var(--accent); font-weight: 700; }
+.panel.arena .small a { color: var(--accent2); text-decoration: none; }
+.panel.arena .small a:hover { text-decoration: underline; }
+
+.arena-ladder { margin: 0 0 22px; }
+.sec-title {
+    font-size: 1.15rem; color: var(--accent); margin: 0 0 12px;
+    display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+}
+.sec-title .sub { font-size: 0.74rem; font-weight: 500; color: var(--muted); letter-spacing: 0.3px; }
+td.elshowcase { color: var(--accent); font-weight: 700; font-size: 1.02rem; }
+.wstreak { color: var(--green); font-weight: 700; }
+.lstreak { color: var(--red); font-weight: 700; }

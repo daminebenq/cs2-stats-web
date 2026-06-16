@@ -44,6 +44,17 @@ if ($server !== null) {
     }
 }
 
+// Arena 1v1 ELO ladder (only on the Multi 1v1 Arena server).
+$arena = [];
+$isArena = ($server !== null && $port === 27018);
+if ($isArena) {
+    try {
+        $arena = db($cfg)->query(
+            "SELECT steamid64, name, rating, wins, losses, duels, streak, best_rating
+             FROM k4store.arena_elo WHERE duels > 0 ORDER BY rating DESC LIMIT 100")->fetchAll();
+    } catch (Throwable $e) { $arena = []; }
+}
+
 function ago2(?string $dt): string {
     if (!$dt) return '';
     $t = strtotime($dt);
@@ -105,6 +116,42 @@ $siteUrl = rtrim($cfg['site_url'] ?? 'https://stats.damineweb.work', '/');
 <?php elseif ($error !== null): ?>
     <div class="error">Could not load roster.<br><small><?= h($error) ?></small></div>
 <?php else: ?>
+    <?php if ($isArena): ?>
+    <section class="arena-ladder">
+        <h2 class="sec-title">⚔ Arena Ladder <span class="sub">CS:GO-style 1v1 ELO &middot; everyone starts at 1500</span></h2>
+        <?php if (empty($arena)): ?>
+            <div class="empty">No ranked duels yet. Win a 1v1 here and you'll appear on the ladder! Type <code>!elo</code> / <code>!arenatop</code> in-game.</div>
+        <?php else: ?>
+        <table class="board">
+            <thead><tr>
+                <th class="r">#</th><th>Player</th>
+                <th class="n">Rating</th><th class="n">W</th><th class="n">L</th><th class="n">Win%</th><th class="n">Duels</th><th class="n">Streak</th><th class="n">Best</th>
+            </tr></thead>
+            <tbody>
+            <?php foreach ($arena as $i => $a):
+                $place = $i + 1;
+                $w = (int)$a['wins']; $l = (int)$a['losses']; $d = (int)$a['duels'];
+                $winp = $d > 0 ? $w / $d * 100 : 0.0;
+                $stk = (int)$a['streak'];
+                $medal = $place === 1 ? 'gold' : ($place === 2 ? 'silver' : ($place === 3 ? 'bronze' : ''));
+            ?>
+                <tr>
+                    <td class="r <?= $medal ?>"><?= $place ?></td>
+                    <td class="player"><a href="player.php?id=<?= h((string)$a['steamid64']) ?>"><?= h($a['name'] ?: 'Unknown') ?></a></td>
+                    <td class="n elshowcase"><?= number_format((int)$a['rating']) ?></td>
+                    <td class="n"><?= number_format($w) ?></td>
+                    <td class="n"><?= number_format($l) ?></td>
+                    <td class="n"><?= number_format($winp, 0) ?>%</td>
+                    <td class="n"><?= number_format($d) ?></td>
+                    <td class="n"><?php if ($stk > 0): ?><span class="wstreak">W<?= $stk ?></span><?php elseif ($stk < 0): ?><span class="lstreak">L<?= -$stk ?></span><?php else: ?>&mdash;<?php endif; ?></td>
+                    <td class="n muted"><?= number_format((int)$a['best_rating']) ?></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+        <?php endif; ?>
+    </section>
+    <?php endif; ?>
     <p class="muted" style="margin:0 0 14px">
         Players who have played on <strong><?= h($title) ?></strong>
         (<?= count($players) ?> tracked). Stats shown are fleet-wide totals; presence is per-server.

@@ -20,6 +20,7 @@ $recent = [];
 $topCredits = [];
 $vips = [];
 $cheaters = [];
+$arenaTop = [];
 
 try {
     $pdo = db($cfg);
@@ -80,6 +81,11 @@ try {
                      FROM cheater_flags WHERE status = 'review'
                      GROUP BY steam_id ORDER BY MAX(flagged_at) DESC LIMIT 6")->fetchAll();
             } catch (Throwable $e) { $cheaters = []; }
+            try {
+                $arenaTop = $sdb->query(
+                    "SELECT steamid64, name, rating, wins, losses
+                     FROM arena_elo WHERE duels > 0 ORDER BY rating DESC LIMIT 5")->fetchAll();
+            } catch (Throwable $e) { $arenaTop = []; }
         }
     }
 } catch (Throwable $e) {
@@ -238,6 +244,17 @@ $ogDesc  = 'Live rankings, stats & leaderboards for the MUS SOU MANO CS2 communi
             </ol>
             <?php endif; ?>
         </div>
+        <?php if (!empty($arenaTop)): ?>
+        <div class="panel arena">
+            <h3>⚔ Arena Ladder <span class="sub">1v1 ELO</span></h3>
+            <ol class="mini elo">
+                <?php foreach ($arenaTop as $i => $p): ?>
+                <li><a href="player.php?id=<?= h((string)$p['steamid64']) ?>"><?= h($p['name'] ?: 'Unknown') ?></a><span class="eloval"><?= number_format((int)$p['rating']) ?></span></li>
+                <?php endforeach; ?>
+            </ol>
+            <p class="muted small">CS:GO-style 1v1 rating &middot; <a href="server.php?port=27018">full ladder &raquo;</a></p>
+        </div>
+        <?php endif; ?>
         <?php if (!empty($cheaters)): ?>
         <div class="panel flagged">
             <h3>⚠ Under Review</h3>
