@@ -1,0 +1,12 @@
+# Local/secret config — config.php holds the injected DB password on the server.
+# Keep the template (config.example.php) in git, not the live one.
+config.local.php
+
+# OS / editor cruft
+.DS_Store
+*.swp
+*~
+
+# Tarballs / build artifacts
+*.tgz
+*.zip
