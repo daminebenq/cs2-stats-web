@@ -19,6 +19,7 @@ $bestAim = [];
 $recent = [];
 $topCredits = [];
 $vips = [];
+$cheaters = [];
 
 try {
     $pdo = db($cfg);
@@ -72,6 +73,13 @@ try {
                     "SELECT PlayerName AS name, SteamID AS steam_id, Credits
                      FROM store_players WHERE Vip = 1 ORDER BY Credits DESC LIMIT 8")->fetchAll();
             } catch (Throwable $e) { $vips = []; }
+            try {
+                $cheaters = $sdb->query(
+                    "SELECT steam_id, MAX(name) AS name,
+                            GROUP_CONCAT(DISTINCT reason SEPARATOR ' \u00b7 ') AS reasons
+                     FROM cheater_flags WHERE status = 'review'
+                     GROUP BY steam_id ORDER BY MAX(flagged_at) DESC LIMIT 6")->fetchAll();
+            } catch (Throwable $e) { $cheaters = []; }
         }
     }
 } catch (Throwable $e) {
@@ -154,7 +162,7 @@ $ogDesc  = 'Live rankings, stats & leaderboards for the MUS SOU MANO CS2 communi
     <div class="srv <?= $on ? 'up' : 'down' ?>" data-port="<?= (int)$c['port'] ?>">
         <div class="srv-ic"><?= h($c['icon']) ?></div>
         <div class="srv-body">
-            <div class="srv-name"><?= h($c['name']) ?></div>
+            <div class="srv-name"><a href="server.php?port=<?= (int)$c['port'] ?>"><?= h($c['name']) ?></a></div>
             <div class="srv-meta">
                 <?php if ($on): ?>
                     <span class="dot"></span><?= (int)$i['humans'] ?>/<?= (int)$i['max'] ?> players<?php if ((int)$i['bots'] > 0): ?> <span class="bots">+<?= (int)$i['bots'] ?> bots</span><?php endif; ?> &middot; <span class="map"><?= h($i['map']) ?></span>
@@ -230,6 +238,17 @@ $ogDesc  = 'Live rankings, stats & leaderboards for the MUS SOU MANO CS2 communi
             </ol>
             <?php endif; ?>
         </div>
+        <?php if (!empty($cheaters)): ?>
+        <div class="panel flagged">
+            <h3>⚠ Under Review</h3>
+            <ul class="mini">
+                <?php foreach ($cheaters as $p): ?>
+                <li><a href="player.php?id=<?= h((string)$p['steam_id']) ?>"><?= h($p['name'] ?: 'Unknown') ?></a><span class="flag"><?= h($p['reasons']) ?></span></li>
+                <?php endforeach; ?>
+            </ul>
+            <p class="muted small">Auto-flagged by stat checks &middot; pending admin review.</p>
+        </div>
+        <?php endif; ?>
         <?php if (!empty($topCredits)): ?>
         <div class="panel">
             <h3>Richest Players</h3>

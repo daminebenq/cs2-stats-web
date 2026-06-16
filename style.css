@@ -294,3 +294,25 @@ footer code { background: var(--panel2); padding: 1px 7px; border-radius: 5px; c
     .brand { flex-direction: column; gap: 10px; }
     .hero h1, .tagline { text-align: center; }
 }
+
+/* clickable server name */
+.srv-name a { color: var(--text); text-decoration: none; }
+.srv-name a:hover { color: var(--accent); }
+
+/* server page: big join + footer server links */
+.join.big { padding: 12px 26px; font-size: 0.95rem; }
+.srvlink {
+    display: inline-block; margin: 0 4px;
+    background: var(--panel2); border: 1px solid var(--border);
+    color: var(--accent); text-decoration: none;
+    padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600;
+}
+.srvlink:hover { border-color: var(--accent); }
+
+/* cheater "under review" panel */
+.panel.flagged { border-color: var(--red); background: linear-gradient(160deg, #2a1518, #161b22); }
+.panel.flagged h3 { color: #ff7b72; }
+.mini li span.flag {
+    color: #ff7b72; font-weight: 600; font-size: 0.72rem;
+    text-align: right; white-space: normal; line-height: 1.2;
+}
