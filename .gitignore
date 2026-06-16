@@ -13,3 +13,7 @@ config.local.php
 
 # Banner venv (regeneratable)
 banner/venv/
+
+# Python bytecode cache
+__pycache__/
+*.pyc
