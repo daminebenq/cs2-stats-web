@@ -116,26 +116,29 @@ def build(width, height, big=True):
     tx = pad + side + max(9, width // 36)
 
     if big:
-        wm = gradient_text((width, height), "MUS SOU MANO", font(FONT_BLACK, 21),
-                           AMBER, ORANGE, (tx, height * 0.40), anchor="lm")
+        wm = gradient_text((width, height), "MUS SOU MANO", font(FONT_BLACK, 20),
+                           AMBER, ORANGE, (tx, height * 0.32), anchor="lm")
         img = Image.alpha_composite(img, wm)
         draw = ImageDraw.Draw(img)
         # subtitle line: handle + URL
-        draw.text((tx + 1, height * 0.72), "MOHAMED ", font=font(FONT_BOLD, 10), fill=TEXT, anchor="lm")
-        w1 = draw.textlength("MOHAMED ", font=font(FONT_BOLD, 10))
-        draw.text((tx + 1 + w1, height * 0.72), "\u2022 stats.damineweb.work",
-                  font=font(FONT_BOLD, 10), fill=AMBER, anchor="lm")
-        # right side: Brazil flag chip + crosshair
+        draw.text((tx + 1, height * 0.60), "MOHAMED ", font=font(FONT_BOLD, 9), fill=TEXT, anchor="lm")
+        w1 = draw.textlength("MOHAMED ", font=font(FONT_BOLD, 9))
+        draw.text((tx + 1 + w1, height * 0.60), "\u2022 stats.damineweb.work",
+                  font=font(FONT_BOLD, 9), fill=AMBER, anchor="lm")
+        # gamemode tagline
+        draw.text((tx + 1, height * 0.82), "ZOMBIE \u00b7 1v1 ARENA \u00b7 DM \u00b7 KZ \u00b7 AWP",
+                  font=font(FONT_BOLD, 8), fill=(150, 160, 172), anchor="lm")
+        # right side: Brazil flag chip + label
         chip_w, chip_h = 16, 11
         rx = width - pad - chip_w - 2
-        ry = int(height * 0.26)
+        ry = int(height * 0.22)
         # green field
         draw.rounded_rectangle([rx, ry, rx + chip_w, ry + chip_h], radius=2, fill=BR_GREEN)
         # yellow diamond
         cxx, cyy = rx + chip_w / 2, ry + chip_h / 2
         draw.polygon([(cxx, ry + 1.5), (rx + chip_w - 2, cyy), (cxx, ry + chip_h - 1.5), (rx + 2, cyy)], fill=BR_YELLOW)
         draw.ellipse([cxx - 2.2, cyy - 2.2, cxx + 2.2, cyy + 2.2], fill=(0, 39, 118))
-        draw.text((rx + chip_w / 2, ry + chip_h + 9), "BRAZIL", font=font(FONT_BOLD, 7),
+        draw.text((rx + chip_w / 2, ry + chip_h + 8), "BRAZIL", font=font(FONT_BOLD, 7),
                   fill=(120, 130, 142), anchor="mm")
     else:
         wm = gradient_text((width, height), "MUS SOU MANO", font(FONT_BLACK, 16),

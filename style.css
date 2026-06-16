@@ -38,6 +38,16 @@ body {
     border-radius: 14px;
     box-shadow: 0 6px 18px rgba(240,165,0,0.25);
 }
+.logo-img {
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--accent);
+    box-shadow: 0 6px 18px rgba(240,165,0,0.30);
+    background: var(--panel2);
+}
+.logo-link { display: inline-flex; line-height: 0; }
+.logo-link .logo-img { width: 54px; height: 54px; }
 
 .hero h1 {
     font-size: 2.2rem;

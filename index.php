@@ -106,7 +106,7 @@ function ago(?string $dt): string {
 <body>
 <header class="hero">
     <div class="brand">
-        <div class="logo">MSM</div>
+        <img class="logo-img" src="avatar.jpg" alt="MUS SOU MANO" width="60" height="60">
         <div>
             <h1><?= h($cfg['site_title']) ?></h1>
             <p class="tagline"><?= $cfg['site_sub'] ?></p>

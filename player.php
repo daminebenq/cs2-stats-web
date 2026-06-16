@@ -79,7 +79,7 @@ $name    = $rankRow['name'] ?? ($statRow['name'] ?? 'Unknown');
 <body>
 <header class="hero compact">
     <div class="brand">
-        <a class="logo" href="index.php">MSM</a>
+        <a class="logo-link" href="index.php"><img class="logo-img" src="avatar.jpg" alt="MUS SOU MANO" width="54" height="54"></a>
         <div>
             <h1><?= h($name) ?></h1>
             <p class="tagline">
