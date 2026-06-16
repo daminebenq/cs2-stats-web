@@ -10,3 +10,6 @@ config.local.php
 # Tarballs / build artifacts
 *.tgz
 *.zip
+
+# Banner venv (regeneratable)
+banner/venv/
